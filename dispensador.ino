@@ -1,32 +1,44 @@
+// Librerias
 #include <Servo.h>
+
+// Constantes
 #define OPENED true
 #define CLOSED false
+#define SERVO_PIN 5
+#define OPENED_DEGREES 48
+#define CLOSED_DEGREES 97
 
 // Declaramos la variable para controlar el servo
 Servo servoMotor;
 bool servoStatus = CLOSED;
- 
-void setup() {
-  // Iniciamos el monitor serie para mostrar el resultado
-  Serial.begin(9600);
- 
-  // Iniciamos el servo para que empiece a trabajar con el pin 9
-  servoMotor.attach(5);
-  servoMotor.write(0);
-}
 
 void servOpen() {
-  servoMotor.write(180);
+  servoMotor.write( OPENED_DEGREES );
   servoStatus = OPENED;
-  Serial.print("Abriendo!\n");
+  Serial.print( "Abriendo compuerta!\n" );
   return;
 }
 
 void servClose() {
-  servoMotor.write(0);
+  servoMotor.write( CLOSED_DEGREES );
   servoStatus = CLOSED;
-  Serial.print("Cerrando!\n");
+  Serial.print("Cerrando compuerta!\n");
   return;
+}
+
+void servTimer(unsigned long time) {
+  servOpen();
+  delay(time);
+  servClose();
+}
+
+void setup() {
+  // Iniciamos el monitor serie para mostrar el resultado
+  Serial.begin( 9600 );
+ 
+  // Iniciamos el servo
+  servoMotor.attach( SERVO_PIN );
+  servoMotor.write( CLOSED_DEGREES );
 }
 
 void loop() {
@@ -35,7 +47,10 @@ void loop() {
     
     if(option == 'o') servOpen();
     else if (option == 'c') servClose();
-  } 
+    else if (option == 't') {
+      servTimer(2000);
+    }
+} 
   
 /* 
   servoMotor.write(0);
